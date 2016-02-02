@@ -143,6 +143,9 @@ class PyrosROS(PyrosBase):
             rqst = self.msg_build(name)
             msgconv.populate_instance(rqst_content, rqst)
 
+            # FIXME : if the service is not exposed this returns None.
+            # Cost a lot time to find the reason since client code doesnt check the answer.
+            # Maybe returning error is better ?
             if self.ros_if and name in self.ros_if.services.keys():
                 resp = self.ros_if.services.get(name, None).call(rqst)
                 resp_content = msgconv.extract_values(resp)
@@ -188,7 +191,7 @@ class PyrosROS(PyrosBase):
             self.rocon_if.request_interaction(name)
 
         return None
-            
+
     def interactions(self):
         if self.rocon_if:
             ir = self.rocon_if.interactions
@@ -207,7 +210,7 @@ class PyrosROS(PyrosBase):
                 rapp_dict[rapp] = NamespaceInfo(name=rapp.name)
 
             return rapp_dict
-                
+
         return {}
 
     def has_rocon(self):
@@ -249,7 +252,7 @@ class PyrosROS(PyrosBase):
         # we initialize the node here, in subprocess, passing ros parameters.
         # disabling signal to avoid overriding callers behavior
         rospy.init_node(self.name, argv=self.str_argv, disable_signals=True)
-        rospy.logwarn('PyrosROS {name} node started with args : {argv}'.format(name=self.name, argv=self.str_argv))
+        rospy.loginfo('PyrosROS {name} node started with args : {argv}'.format(name=self.name, argv=self.str_argv))
 
         if self.dynamic_reconfigure:
             # Create a dynamic reconfigure server ( needs to be done after node_init )
@@ -307,7 +310,7 @@ class PyrosROS(PyrosBase):
 
         self.enable_rocon = config.get('enable_rocon', False)
 
-        rospy.logwarn("""[{name}] Interface Reconfigure Request:
+        rospy.loginfo("""[{name}] Interface Reconfigure Request:
     services : {services}
     topics : {topics}
     params : {params}
