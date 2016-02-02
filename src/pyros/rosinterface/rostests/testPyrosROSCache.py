@@ -70,6 +70,8 @@ def srv_cb(req):
 class TestPyrosROSCache(TestPyrosROS):
 
     def setUp(self):
+        self.connection_cache_spin_freq = 1  # change this to test different spin speed for the connection cache node
+        rospy.set_param("/connection_cache/spin_freq", self.connection_cache_spin_freq)
         self.connection_cache_node = roslaunch.core.Node('rocon_python_comms', 'connection_cache.py', name='connection_cache',
                                                          remap_args=[('~list', '/pyros_ros/connections_list'),
                                                                      ('~diff', '/pyros_ros/connections_diff'),

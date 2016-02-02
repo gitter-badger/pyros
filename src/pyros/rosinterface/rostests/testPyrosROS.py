@@ -264,7 +264,7 @@ class TestPyrosROS(object):
                 # however we can wait for topic to be detected to make sure we get it after some time
 
                 res = topics.call()
-                with Timeout(15) as t:
+                with Timeout(5) as t:
                     while not t.timed_out and not '/string_pub/test_str_topic' in res.keys():
                         rospy.rostime.wallsleep(1)
                         res = topics.call()

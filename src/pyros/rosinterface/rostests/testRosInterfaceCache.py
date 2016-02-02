@@ -61,6 +61,8 @@ def srv_cb(req):
 @nose.tools.istest
 class TestRosInterfaceCache(TestRosInterface):
     def setUp(self):
+        self.connection_cache_spin_freq = 1  # change this to test different spin speed for the connection cache node
+        rospy.set_param("/connection_cache/spin_freq", self.connection_cache_spin_freq)
         self.connection_cache_node = roslaunch.core.Node('rocon_python_comms', 'connection_cache.py', name='connection_cache',
                                                          remap_args=[('~list', rospy.resolve_name('~connections_list')),
                                                                      ('~diff', rospy.resolve_name('~connections_diff'))])
